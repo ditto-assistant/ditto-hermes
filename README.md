@@ -39,7 +39,7 @@ Hermes user                                                    Hermes agent
   │                                                                  │
   ├─ "what did I say about X?"                                       │
   │                                          ┌──────────────────┐    │
-  │                                          │   ditto binary   │ ◀──┤ ditto save / search /
+  │                                          │ heyditto binary  │ ◀──┤ heyditto save / search /
   │                                          │   on PATH        │    │ fetch / subjects /
   │                                          └────────┬─────────┘    │ memories / network
   │                                                   │              │
@@ -48,7 +48,7 @@ Hermes user                                                    Hermes agent
   │                                       https://api.heyditto.ai/mcp ◀──┘
 ```
 
-Auth is API key. `DITTO_API_KEY` env (set by Hermes) takes priority; `ditto login <key>` storing `~/.config/heyditto/cli/config.json` is a fallback for users who run the CLI standalone.
+Auth is API key. `DITTO_API_KEY` env (set by Hermes) takes priority; `heyditto login <key>` storing `~/.config/heyditto/cli/config.json` is a fallback for users who run the CLI standalone.
 
 ## How this differs from `ditto-clawhub`
 
@@ -86,7 +86,7 @@ Three options, pick one (or all):
 
 ## Related
 
-- [`ditto-cli`](https://github.com/ditto-assistant/ditto-cli) — `@heyditto/cli` source. Where `ditto save`, `ditto login`, etc. are implemented.
+- [`ditto-cli`](https://github.com/ditto-assistant/ditto-cli) — `@heyditto/cli` source. Where `heyditto save`, `heyditto login`, etc. are implemented (also exposed under the `ditto` alias bin).
 - [`ditto-mcp`](https://github.com/ditto-assistant/ditto-mcp) — sibling stdio MCP bridge (`@heyditto/mcp`) with browser-OAuth, for Claude Desktop / Cursor.
 - [`ditto-clawhub`](https://github.com/ditto-assistant/ditto-clawhub) — sibling skill bundle for OpenClaw / ClawHub.
 - [Hermes Agent](https://hermes-agent.nousresearch.com) ([repo](https://github.com/NousResearch/hermes-agent)) — the agent.

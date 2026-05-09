@@ -5,11 +5,29 @@ After `hermes skills install ditto-assistant/ditto-hermes/ditto`:
 ## 1. Install the Ditto CLI
 
 ```bash
-npm install -g @heyditto/cli
-ditto --version
+npm install -g @heyditto/cli@latest
+heyditto --version    # 1.1.3 or newer
 ```
 
 Hermes installs Node.js as part of its own installer, so npm should already be on PATH. If `npm` isn't found, install Node 20+ first.
+
+**Why `heyditto` and not `ditto`:** the npm package ships two interchangeable binaries — `heyditto` and `ditto`. This skill standardizes on **`heyditto`** because on macOS Apple ships `/usr/bin/ditto` (a file-copy utility) which can shadow the npm CLI on default PATHs. `heyditto` has no such collision and works identically on every platform.
+
+**Why 1.1.3+:** earlier builds reject the `--output` flag this skill uses everywhere and don't include the `heyditto` alias bin.
+
+> If `heyditto --version` reports `heyditto: command not found`, the CLI is either missing or older than 1.1.3 — run the install line again. If you still want to use `ditto` (e.g. on Linux or once your PATH is sorted), `ditto` is the same binary.
+
+### Optional: also wire up `ditto` cleanly on macOS
+
+If you'd rather type `ditto` and have it Just Work, check what your shell resolves first:
+
+```bash
+type -a ditto
+# /usr/bin/ditto             ← Apple's tool (file-copy utility)
+# /opt/homebrew/bin/ditto    ← @heyditto/cli (you want this one to win)
+```
+
+If Apple's binary appears first, reorder `PATH` so the npm global bin precedes `/usr/bin` (e.g. in `~/.zshrc`), or call `/opt/homebrew/bin/ditto …` explicitly. None of this is necessary if you stick to `heyditto`.
 
 ## 2. API key
 
@@ -30,7 +48,7 @@ hermes skills config ditto
 Or use the CLI's own login flow (writes `~/.config/heyditto/cli/config.json`, mode 0600):
 
 ```bash
-ditto login <paste-key>
+heyditto login <paste-key>
 ```
 
 `DITTO_API_KEY` env wins over the config file — useful for one-off overrides, otherwise the file persists across shells.
@@ -38,39 +56,55 @@ ditto login <paste-key>
 ## 3. Smoke test
 
 ```bash
-ditto status
+heyditto status --output json
 ```
 
-Expected output:
+Expected (pretty-printed JSON):
 
-```
-@heyditto/cli 1.x.x
-endpoint:  https://api.heyditto.ai/mcp
-api key:   set  (source: env)
-tools:     fetch_memories, get_memory_network, save_memory,
-           search_memories, search_memories_in_subjects, search_subjects
+```json
+{
+  "package": "@heyditto/cli",
+  "version": "1.1.3",
+  "endpoint": "https://api.heyditto.ai/mcp",
+  "apiKey": { "present": true, "source": "env" },
+  "tools": [
+    "fetch_memories",
+    "get_memory_network",
+    "save_memory",
+    "search_memories",
+    "search_memories_in_subjects",
+    "search_subjects"
+  ],
+  "connect": { "ok": true }
+}
 ```
 
-Then:
+Then exercise a data command:
 
 ```bash
-ditto subjects "test" --output json
+heyditto subjects "test" --top-k 1 --output json
 ```
 
-Should return JSON results from the user's account.
+Should return JSON like `{"results":[…],"metadata":{…}}` from the user's account.
+
+> If you see `heyditto: command not found` or `Unknown option '--output'`, the npm CLI is missing or older than 1.1.3 — run `npm install -g @heyditto/cli@latest`.
+>
+> If you're typing `ditto` instead of `heyditto` and see `ditto: unrecognized option '--output'` or Apple's `Usage: ditto [ <options> ] src …`, you're hitting `/usr/bin/ditto` — switch to `heyditto`, or fix PATH (see step 1).
 
 ## You're done
 
-Hermes will now use Ditto memory automatically when the conversation calls for it. See [`examples.md`](examples.md) for agent patterns, or run `ditto help` for the full CLI reference.
+Hermes will now use Ditto memory automatically when the conversation calls for it. See [`examples.md`](examples.md) for agent patterns, or run `heyditto help` for the full CLI reference.
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---|---|
-| `ditto: command not found` | `npm install -g @heyditto/cli`; reopen shell to pick up the new bin. |
-| `error: no Ditto API key configured` | `hermes skills config ditto` (re-prompts) or `ditto login <key>`. |
-| `ditto status` shows `source: env` but you wanted `config` | The env var overrides. `unset DITTO_API_KEY` (and remove from `~/.zshrc` etc.) or rely on Hermes' env-var injection. |
-| Connection failures | `ditto status` to verify endpoint; rotate key with `ditto logout && ditto login <new>`. |
+| `heyditto: command not found` | `npm install -g @heyditto/cli@latest`; reopen shell to pick up the new bin. (`heyditto` ships in 1.1.3+.) |
+| `Unknown option '--output'` from the npm CLI | Installed `@heyditto/cli` is older than 1.1.3. `npm install -g @heyditto/cli@latest`. |
+| `ditto: unrecognized option '--output'` *or* `Usage: ditto [ <options> ] src [ ... src ] dst` | You typed `ditto` and hit Apple's `/usr/bin/ditto`. Use `heyditto` (no collision) or fix PATH — see step 1. |
+| `error: no Ditto API key configured` | `hermes skills config ditto` (re-prompts) or `heyditto login <key>`. |
+| `heyditto status` shows `source: env` but you wanted `config` | The env var overrides. `unset DITTO_API_KEY` (and remove from `~/.zshrc` etc.) or rely on Hermes' env-var injection. |
+| Connection failures | `heyditto status --output json` to verify endpoint and tool list; rotate key with `heyditto logout && heyditto login <new>`. |
 | Anything else | support@heyditto.ai |
 
 ## Where to get help
