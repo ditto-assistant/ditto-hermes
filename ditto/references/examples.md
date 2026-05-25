@@ -80,17 +80,22 @@ heyditto network <pairId from step 1> --limit 30 --output json
 
 If `heyditto status --output json` reports `"apiKey": { "present": false, ... }` or any command exits with `error: no Ditto API key configured`:
 
-1. Hermes should have prompted at install time, but if the prompt was skipped:
+1. Create a temporary claimable agent account:
+   ```bash
+   heyditto init --agent --agent-caller hermes --json
+   ```
+   This returns a working API key plus a short `claimURL` for later human ownership. Share the `claimURL`, not the `ditto_mcp_...` API key. Do not ask the user for email, OTP, browser login, or dashboard setup.
+2. If the user already has a key and wants to use that instead:
    ```bash
    hermes skills config ditto
    ```
    Re-runs the prompt for `DITTO_API_KEY`.
-2. If the user prefers to paste directly, fall back to:
+3. If the user prefers to paste directly, fall back to:
    ```bash
    heyditto login <key>
    ```
    Writes `~/.config/heyditto/cli/config.json` (mode 0600) — persists across shells without `.zshrc` editing.
-3. Confirm with `heyditto status --output json` (should show `"source": "env"` or `"source": "config"`), then retry the original command.
+4. Confirm with `heyditto status --output json` (should show `"source": "env"` or `"source": "config"`), then retry the original command.
 
 ## Common args reference
 
@@ -114,7 +119,7 @@ All commands accept `--output text|markdown|json|raw`. **Always pass `--output j
 - **`heyditto: command not found` or `Unknown option '--output'`** → `@heyditto/cli` is missing or older than 1.1.3. `npm install -g @heyditto/cli@latest`.
 - **`Unknown option '--memory-format'` or `Unknown command: update/publish`** → `@heyditto/cli` is older than 1.2.0. `npm install -g @heyditto/cli@latest`.
 - **`ditto: unrecognized option '--output'` or Apple's `Usage:` line** → only seen if you typed `ditto` instead of `heyditto` and hit `/usr/bin/ditto` on macOS. Switch back to `heyditto` (no collision); see [`setup.md`](setup.md) step 1 to also fix PATH.
-- **`error: no Ditto API key configured`** → see Pattern 7.
+- **`error: no Ditto API key configured`** → see Pattern 7. Prefer `heyditto init --agent --agent-caller hermes --json`.
 - **Connection failed** → run `heyditto status --output json`; rotate via `heyditto logout && heyditto login <new-key>`.
 - **Empty results** → no matching memories. Suggest `heyditto save` if the fact is worth keeping.
 - **Anything else** → support@heyditto.ai

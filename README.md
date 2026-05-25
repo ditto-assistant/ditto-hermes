@@ -21,7 +21,7 @@ ditto/
     └── examples.md            # agent patterns (recall, opinion, save, traverse, first-run-no-key)
 ```
 
-`SKILL.md` declares `required_environment_variables: [{ name: DITTO_API_KEY, prompt: ..., help: ... }]` so Hermes prompts the user for the key automatically at install time and injects it into every skill invocation. No manual `export` required.
+`SKILL.md` declares `required_environment_variables: [{ name: DITTO_API_KEY, prompt: ..., help: ... }]` for existing human keys, but the default agent path is `heyditto init --agent --json`. That creates a temporary claimable account without email, OTP, dashboard setup, or browser login; the agent shares only the short claim link with the user.
 
 ## Architecture
 
@@ -31,11 +31,11 @@ Hermes user                                                    Hermes agent
   ├─ hermes skills install ditto-assistant/ditto-hermes/ditto        │
   │     extracts SKILL.md into ~/.hermes/skills/.../ditto/           │
   │                                                                  │
-  ├─ Hermes prompts: "Ditto API key …"                              │
-  │     user pastes → stored, injected as $DITTO_API_KEY             │
-  │                                                                  │
   ├─ user runs `npm install -g @heyditto/cli`                        │
   │     (Hermes installer ships Node 22; npm available)              │
+  │                                                                  │
+  ├─ agent runs `heyditto init --agent --agent-caller hermes --json` │
+  │     creates a free claimable account and stores the API key      │
   │                                                                  │
   ├─ "what did I say about X?"                                       │
   │                                          ┌──────────────────┐    │
@@ -48,7 +48,7 @@ Hermes user                                                    Hermes agent
   │                                       https://api.heyditto.ai/mcp ◀──┘
 ```
 
-Auth is API key. `DITTO_API_KEY` env (set by Hermes) takes priority; `heyditto login <key>` storing `~/.config/heyditto/cli/config.json` is a fallback for users who run the CLI standalone.
+Auth is API key. Agents can self-provision with `heyditto init --agent --json`; `DITTO_API_KEY` env (set by Hermes) still takes priority, and `heyditto login <key>` storing `~/.config/heyditto/cli/config.json` remains the fallback for existing keys.
 
 ## How this differs from `ditto-clawhub`
 
@@ -59,7 +59,7 @@ Auth is API key. `DITTO_API_KEY` env (set by Hermes) takes priority; `heyditto l
 | Distribution | GitHub tap (this repo) → `hermes skills tap add` | drag `publish/` into clawhub.ai/publish |
 | CLI auto-install | No — user runs `npm i -g @heyditto/cli` | Yes — one-click "Install Ditto CLI (npm)" button via openclaw's `install` spec |
 | Key onboarding URL | https://app.heyditto.ai/connect/hermes | https://app.heyditto.ai/connect/openclaw |
-| Auth flow | Hermes prompts at install time, env-injects on every call | User pastes key in chat, agent runs `ditto login <key>` |
+| Auth flow | Agent runs `heyditto init --agent --json`; optional env-injected key override | Agent runs `ditto init --agent --json`; optional `ditto login <key>` fallback |
 
 Same CLI binary (`@heyditto/cli`), same backend MCP, two skill bundles tailored to each agent's idioms.
 
