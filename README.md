@@ -65,7 +65,7 @@ Same CLI binary (`@heyditto/cli`), same backend MCP, two skill bundles tailored 
 
 ## Status
 
-- [x] `@heyditto/cli` published on npm (1.1.x, Trusted Publisher via [`ditto-cli`](https://github.com/ditto-assistant/ditto-cli))
+- [x] `@heyditto/cli` published on npm (1.2.x current skill target, Trusted Publisher via [`ditto-cli`](https://github.com/ditto-assistant/ditto-cli))
 - [x] Skill bundle finalized — `ditto/SKILL.md` matches the canonical [Hermes mcporter skill](https://github.com/NousResearch/hermes-agent/blob/main/optional-skills/mcp/mcporter/SKILL.md) shape
 - [ ] `https://app.heyditto.ai/connect/hermes` live (frontend)
 - [ ] Repo flipped public so `hermes skills tap add` works
