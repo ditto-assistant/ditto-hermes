@@ -21,7 +21,7 @@ ditto/
     └── examples.md            # agent patterns (recall, opinion, save, traverse, first-run-no-key)
 ```
 
-`SKILL.md` declares `required_environment_variables: [{ name: DITTO_API_KEY, prompt: ..., help: ... }]` for existing human keys, but the default agent path is `heyditto init --agent --json`. That creates a temporary claimable account without email, OTP, dashboard setup, or browser login; the agent shares only the short claim link with the user.
+`SKILL.md` declares `required_environment_variables: [{ name: DITTO_API_KEY, prompt: ..., help: ... }]` for existing human keys, but the default agent path is `heyditto init --agent --json`. That creates a temporary claimable account without email, OTP, dashboard setup, or browser login; the agent shares only the short claim link with the user. The claim token lives in the link's `#t=...` fragment.
 
 ## Architecture
 

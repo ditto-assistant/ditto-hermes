@@ -84,7 +84,7 @@ If `heyditto status --output json` reports `"apiKey": { "present": false, ... }`
    ```bash
    heyditto init --agent --agent-caller hermes --json
    ```
-   This returns a working API key plus a short `claimURL` for later human ownership. Share the `claimURL`, not the `ditto_mcp_...` API key. Do not ask the user for email, OTP, browser login, or dashboard setup.
+   This returns a working API key plus a short `claimURL` for later human ownership. Share the `claimURL`, not the `ditto_mcp_...` API key. The claim token is carried in the URL fragment (`#t=...`). Do not ask the user for email, OTP, browser login, or dashboard setup.
 2. If the user already has a key and wants to use that instead:
    ```bash
    hermes skills config ditto
