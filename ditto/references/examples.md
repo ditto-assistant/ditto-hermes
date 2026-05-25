@@ -114,7 +114,7 @@ All commands accept `--output text|markdown|json|raw`. **Always pass `--output j
 - **`heyditto: command not found` or `Unknown option '--output'`** → `@heyditto/cli` is missing or older than 1.1.3. `npm install -g @heyditto/cli@latest`.
 - **`Unknown option '--memory-format'` or `Unknown command: update/publish`** → `@heyditto/cli` is older than 1.2.0. `npm install -g @heyditto/cli@latest`.
 - **`ditto: unrecognized option '--output'` or Apple's `Usage:` line** → only seen if you typed `ditto` instead of `heyditto` and hit `/usr/bin/ditto` on macOS. Switch back to `heyditto` (no collision); see [`setup.md`](setup.md) step 1 to also fix PATH.
-- **`error: no Ditto API key configured`** → see Pattern 5.
+- **`error: no Ditto API key configured`** → see Pattern 7.
 - **Connection failed** → run `heyditto status --output json`; rotate via `heyditto logout && heyditto login <new-key>`.
 - **Empty results** → no matching memories. Suggest `heyditto save` if the fact is worth keeping.
 - **Anything else** → support@heyditto.ai

@@ -64,7 +64,7 @@ Expected (pretty-printed JSON):
 ```json
 {
   "package": "@heyditto/cli",
-  "version": "1.1.3",
+  "version": "1.2.0",
   "endpoint": "https://api.heyditto.ai/mcp",
   "apiKey": { "present": true, "source": "env" },
   "tools": [
