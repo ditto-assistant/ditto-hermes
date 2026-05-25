@@ -40,7 +40,33 @@ heyditto save "<durable fact, 1-3 sentences>" \
 
 Confirm to the user: "Saved."
 
-## Pattern 4 — graph traversal
+## Pattern 4 — targeted update
+
+When the user asks to correct or extend an existing saved memory, fetch an
+outline first, then patch block IDs with a base revision.
+
+```bash
+# 1. get stable block IDs
+heyditto fetch <pairId> --memory-format outline --output json
+
+# 2. apply a precise block edit using the revision from the prior save/update response
+heyditto update <pairId> \
+  --edits-json '[{"op":"replace_text","blockId":"2","find":"old","replace":"new","expectedCount":1}]' \
+  --base-revision <revision> \
+  --output json
+```
+
+If the current revision is unknown, use full replacement instead:
+`heyditto update <pairId> --content-file revised.md --output json`.
+
+## Pattern 5 — publish only on explicit request
+
+```bash
+heyditto publish <pairId> --title "<optional title>" --privacy-mode scan_and_block --output json
+heyditto unpublish --share-id <shareId> --output json
+```
+
+## Pattern 6 — graph traversal
 
 ```bash
 # 1. find seed memory
@@ -50,7 +76,7 @@ heyditto search "X" --output json
 heyditto network <pairId from step 1> --limit 30 --output json
 ```
 
-## Pattern 5 — first-run, no key configured
+## Pattern 7 — first-run, no key configured
 
 If `heyditto status --output json` reports `"apiKey": { "present": false, ... }` or any command exits with `error: no Ditto API key configured`:
 
@@ -71,10 +97,14 @@ If `heyditto status --output json` reports `"apiKey": { "present": false, ... }`
 | Command | Required | Optional |
 |---|---|---|
 | `heyditto save <content>` | content | `--source <s>`, `--source-context <c>` |
-| `heyditto search <q>...` | one or more queries | — |
-| `heyditto fetch <id>...` | one or more pair ids | — |
+| `heyditto search <q>...` | one or more queries | `--include-public`, `--filter-username <u>` |
+| `heyditto fetch <id>...` | one or more pair/share ids | `--memory-format full\|outline\|blocks` |
+| `heyditto list` | — | `--username <u>`, `--limit <n>`, `--offset <n>`, `--source <s>` |
+| `heyditto update <id>` | memory id plus content or edits | `--content`, `--content-file`, `--edits-json`, `--edits-file`, `--base-revision`, `--title` |
+| `heyditto publish <id>` | memory id | `--title <t>`, `--privacy-mode <mode>` |
+| `heyditto unpublish` | one id | `--memory-id <id>`, `--share-id <id>` |
 | `heyditto subjects <q>` | query | `--top-k <n>` (default 10, max 100) |
-| `heyditto memories <id>...` | one or more subject ids | — |
+| `heyditto memories <id>...` | one or more subject ids | `--query <q>` |
 | `heyditto network <id>` | pair id | `--limit <n>` (default 20, max 50) |
 
 All commands accept `--output text|markdown|json|raw`. **Always pass `--output json`** from Hermes — the agent gets structured data instead of human-formatted text.
@@ -82,6 +112,7 @@ All commands accept `--output text|markdown|json|raw`. **Always pass `--output j
 ## When something fails
 
 - **`heyditto: command not found` or `Unknown option '--output'`** → `@heyditto/cli` is missing or older than 1.1.3. `npm install -g @heyditto/cli@latest`.
+- **`Unknown option '--memory-format'` or `Unknown command: update/publish`** → `@heyditto/cli` is older than 1.2.0. `npm install -g @heyditto/cli@latest`.
 - **`ditto: unrecognized option '--output'` or Apple's `Usage:` line** → only seen if you typed `ditto` instead of `heyditto` and hit `/usr/bin/ditto` on macOS. Switch back to `heyditto` (no collision); see [`setup.md`](setup.md) step 1 to also fix PATH.
 - **`error: no Ditto API key configured`** → see Pattern 5.
 - **Connection failed** → run `heyditto status --output json`; rotate via `heyditto logout && heyditto login <new-key>`.
