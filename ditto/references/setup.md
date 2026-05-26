@@ -31,13 +31,21 @@ If Apple's binary appears first, reorder `PATH` so the npm global bin precedes `
 
 ## 2. API key
 
-Hermes will prompt automatically (declared via `required_environment_variables` in the skill frontmatter):
+No human setup is required for agents. Create a temporary claimable agent account directly from the CLI:
 
-```
-Ditto API key (paste from https://app.heyditto.ai/connect/hermes): _
+```bash
+heyditto init --agent --agent-caller hermes --json
 ```
 
-Open **https://app.heyditto.ai/connect/hermes**, sign in (GitHub / Google / email), click **New key**, copy, paste. Hermes stores it and passes it through to skill commands automatically — no shell-rc editing.
+This provisions a free working API key, stores it in `~/.config/heyditto/cli/config.json` (mode 0600), and prints a short `claimURL` for later human ownership. Share the `claimURL`, not the `ditto_mcp_...` API key. The claim token is in the query string (`?t=...`), and claiming keeps the same key and memories intact.
+
+Hermes may also prompt for an existing key (declared via `required_environment_variables` in the skill frontmatter):
+
+```text
+Ditto API key (optional; agents can run `heyditto init --agent --json`): _
+```
+
+If the user already has a key, they can paste it. Hermes stores it and passes it through to skill commands automatically — no shell-rc editing.
 
 If you missed the prompt or want to re-enter the key:
 
@@ -45,7 +53,7 @@ If you missed the prompt or want to re-enter the key:
 hermes skills config ditto
 ```
 
-Or use the CLI's own login flow (writes `~/.config/heyditto/cli/config.json`, mode 0600):
+Or use the CLI's own login flow for an existing key (writes `~/.config/heyditto/cli/config.json`, mode 0600):
 
 ```bash
 heyditto login <paste-key>
@@ -108,7 +116,7 @@ Hermes will now use Ditto memory automatically when the conversation calls for i
 | `Unknown option '--memory-format'` or `Unknown command: update/publish` | Installed `@heyditto/cli` is older than 1.2.0. `npm install -g @heyditto/cli@latest`. |
 | `Unknown option '--output'` from the npm CLI | Installed `@heyditto/cli` is older than 1.1.3. `npm install -g @heyditto/cli@latest`. |
 | `ditto: unrecognized option '--output'` *or* `Usage: ditto [ <options> ] src [ ... src ] dst` | You typed `ditto` and hit Apple's `/usr/bin/ditto`. Use `heyditto` (no collision) or fix PATH — see step 1. |
-| `error: no Ditto API key configured` | `hermes skills config ditto` (re-prompts) or `heyditto login <key>`. |
+| `error: no Ditto API key configured` | `heyditto init --agent --agent-caller hermes --json` for no-human setup, or `hermes skills config ditto` / `heyditto login <key>` for an existing human key. |
 | `heyditto status` shows `source: env` but you wanted `config` | The env var overrides. `unset DITTO_API_KEY` (and remove from `~/.zshrc` etc.) or rely on Hermes' env-var injection. |
 | Connection failures | `heyditto status --output json` to verify endpoint and tool list; rotate key with `heyditto logout && heyditto login <new>`. |
 | Anything else | support@heyditto.ai |

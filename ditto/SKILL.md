@@ -14,8 +14,8 @@ prerequisites:
   commands: [heyditto]
 required_environment_variables:
   - name: DITTO_API_KEY
-    prompt: Ditto API key (paste from https://app.heyditto.ai/connect/hermes)
-    help: Open https://app.heyditto.ai/connect/hermes — one-page sign-in (GitHub / Google / email), click "New key", and copy. The key starts with "ditto_mcp_".
+    prompt: Ditto API key (optional; agents can run `heyditto init --agent --json`)
+    help: Agents can self-provision with `heyditto init --agent --json` without email, OTP, or a dashboard. Humans can still paste a key from https://app.heyditto.ai/connect/hermes.
     required_for: all skill functionality
 ---
 
@@ -43,7 +43,7 @@ npm install -g @heyditto/cli@latest
 heyditto --version    # should print 1.2.0 or newer
 ```
 
-`DITTO_API_KEY` is prompted by Hermes at skill-install time (declared above). Hermes passes it through to all `terminal` and `execute_code` calls automatically — no manual `export` needed.
+If `DITTO_API_KEY` is configured, Hermes passes it through to all `terminal` and `execute_code` calls automatically. If no key is configured, run `heyditto init --agent --json` once; it creates a free claimable agent account, stores the key the CLI will use thereafter, and returns a short `claimURL` with a query-string claim token to share with the user.
 
 ## Procedure
 
@@ -131,6 +131,7 @@ heyditto network <pairId from step 1> --limit 30 --output json # related via sha
 | `heyditto memories <subject-id>... [--query <q>]` | Fetch or semantically filter memory previews scoped to specific subjects. |
 | `heyditto network <pair-id> [--limit <n>]` | Traverse memories connected via shared subjects (default 20, max 50). |
 | `heyditto status` | Endpoint + key source + live tool list. |
+| `heyditto init --agent [--agent-caller <name>] [--json]` | Create a free claimable agent account and share the returned `claimURL`. |
 | `heyditto config` | Print Claude Desktop / Cursor / generic-MCP-client config snippet. |
 | `heyditto help` | Full reference. |
 
@@ -142,7 +143,7 @@ heyditto network <pairId from step 1> --limit 30 --output json # related via sha
 - **`Unknown option '--memory-format'`, `Unknown command: update`, or `Unknown command: publish`** → installed `@heyditto/cli` is older than 1.2.0. Same fix: `npm install -g @heyditto/cli@latest`.
 - **`Unknown option '--output'`** → installed `@heyditto/cli` is older than 1.1.3. Same fix: `npm install -g @heyditto/cli@latest`.
 - **`ditto: unrecognized option '--output'` or `Usage: ditto [ <options> ] src [ ... src ] dst`** (only seen if a user typed `ditto` instead of `heyditto` on macOS) → that's Apple's `/usr/bin/ditto` shadowing the npm CLI. Stick to `heyditto` (no collision) or run `type -a ditto` and reorder PATH.
-- **`error: no Ditto API key configured`** → `DITTO_API_KEY` didn't make it into the shell. Re-prompt the user via `hermes skills config ditto`, or fall back to `heyditto login <key>` to write `~/.config/heyditto/cli/config.json` directly.
+- **`error: no Ditto API key configured`** → run `heyditto init --agent --agent-caller hermes --json` for no-human setup. If a human already has a key, re-prompt via `hermes skills config ditto`, or fall back to `heyditto login <key>`.
 - **Connection failures** → run `heyditto status --output json`; rotate via `heyditto logout && heyditto login <new-key>`.
 - **Empty results** → user may not have memories matching the query. Suggest they save the fact with `heyditto save` if it's worth keeping.
 - **Schema drift** → run `heyditto status --output json` and `heyditto help` for the current surface.
