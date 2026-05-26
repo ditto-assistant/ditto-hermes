@@ -37,11 +37,11 @@ No human setup is required for agents. Create a temporary claimable agent accoun
 heyditto init --agent --agent-caller hermes --json
 ```
 
-This provisions a free working API key, stores it in `~/.config/heyditto/cli/config.json` (mode 0600), and prints a short `claimURL` for later human ownership. Share the `claimURL`, not the `ditto_mcp_...` API key. The claim token is in the URL fragment (`#t=...`), and claiming keeps the same key and memories intact.
+This provisions a free working API key, stores it in `~/.config/heyditto/cli/config.json` (mode 0600), and prints a short `claimURL` for later human ownership. Share the `claimURL`, not the `ditto_mcp_...` API key. The claim token is in the query string (`?t=...`), and claiming keeps the same key and memories intact.
 
 Hermes may also prompt for an existing key (declared via `required_environment_variables` in the skill frontmatter):
 
-```
+```text
 Ditto API key (optional; agents can run `heyditto init --agent --json`): _
 ```
 

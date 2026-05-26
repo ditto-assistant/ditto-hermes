@@ -21,7 +21,7 @@ ditto/
     └── examples.md            # agent patterns (recall, opinion, save, traverse, first-run-no-key)
 ```
 
-`SKILL.md` declares `required_environment_variables: [{ name: DITTO_API_KEY, prompt: ..., help: ... }]` for existing human keys, but the default agent path is `heyditto init --agent --json`. That creates a temporary claimable account without email, OTP, dashboard setup, or browser login; the agent shares only the short claim link with the user. The claim token lives in the link's `#t=...` fragment.
+`SKILL.md` declares `required_environment_variables: [{ name: DITTO_API_KEY, prompt: ..., help: ... }]` for existing human keys, but the default agent path is `heyditto init --agent --json`. That creates a temporary claimable account without email, OTP, dashboard setup, or browser login; the agent shares only the short claim link with the user. The claim token lives in the link's `?t=...` query parameter.
 
 ## Architecture
 
@@ -59,7 +59,7 @@ Auth is API key. Agents can self-provision with `heyditto init --agent --json`; 
 | Distribution | GitHub tap (this repo) → `hermes skills tap add` | drag `publish/` into clawhub.ai/publish |
 | CLI auto-install | No — user runs `npm i -g @heyditto/cli` | Yes — one-click "Install Ditto CLI (npm)" button via openclaw's `install` spec |
 | Key onboarding URL | https://app.heyditto.ai/connect/hermes | https://app.heyditto.ai/connect/openclaw |
-| Auth flow | Agent runs `heyditto init --agent --json`; optional env-injected key override | Agent runs `ditto init --agent --json`; optional `ditto login <key>` fallback |
+| Auth flow | Agent runs `heyditto init --agent --json`; optional env-injected key override | Agent runs `heyditto init --agent --json`; optional `heyditto login <key>` fallback |
 
 Same CLI binary (`@heyditto/cli`), same backend MCP, two skill bundles tailored to each agent's idioms.
 
