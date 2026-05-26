@@ -43,7 +43,7 @@ npm install -g @heyditto/cli@latest
 heyditto --version    # should print 1.2.0 or newer
 ```
 
-If `DITTO_API_KEY` is configured, Hermes passes it through to all `terminal` and `execute_code` calls automatically. If no key is configured, run `heyditto init --agent --json` once; it creates a free claimable agent account, stores the key the CLI will use thereafter, and returns a short `claimURL` with a query-string claim token to share with the user.
+If `DITTO_API_KEY` is configured, Hermes passes it through to all `terminal` and `execute_code` calls automatically. If no key is configured, run `heyditto init --agent --agent-caller hermes --json` once; it creates a free claimable agent account, stores the key the CLI will use thereafter, and returns a short `claimURL` with a query-string claim token to share with the user. Set `--agent-caller` to the agent's name (or a name the user has chosen) — it is set once at init, labels every saved memory as an external agent thread in the owner's graph, and can't yet be renamed afterward.
 
 ## Procedure
 
