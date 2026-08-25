@@ -120,7 +120,7 @@ heyditto network <pairId from step 1> --limit 30 --output json # related via sha
 
 | Command | Purpose |
 |---|---|
-| `heyditto save <content> [--source <s>] [--source-context <c>]` | Persist a memory pair from an external source. |
+| `heyditto save <content> [--source <s>] [--source-context <c>]` | Save a document or note to the user's memory base. |
 | `heyditto search <query>... [--include-public] [--filter-username <u>]` | Semantic search across private memories and optionally public DittoHub memories. |
 | `heyditto fetch <id>... [--memory-format full\|outline\|blocks]` | Fetch full content or block structures by private pair id or public share id. |
 | `heyditto list [--username <u>] [--limit <n>] [--offset <n>] [--source <s>]` | List saved memories or a public DittoHub catalog. |
