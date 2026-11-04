@@ -81,7 +81,6 @@ Expected (pretty-printed JSON):
     "fetch_memories",
     "get_memory_network",
     "list_memories",
-    "list_my_memories",
     "publish_memory",
     "save_memory",
     "search_memories",
