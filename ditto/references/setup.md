@@ -6,14 +6,14 @@ After `hermes skills install ditto-assistant/ditto-hermes/ditto`:
 
 ```bash
 npm install -g @heyditto/cli@latest
-heyditto --version    # 1.2.0 or newer
+heyditto --version    # 3.19.0 or newer
 ```
 
 Hermes installs Node.js as part of its own installer, so npm should already be on PATH. If `npm` isn't found, install Node 20+ first.
 
 **Why `heyditto` and not `ditto`:** the npm package ships two interchangeable binaries — `heyditto` and `ditto`. This skill standardizes on **`heyditto`** because on macOS Apple ships `/usr/bin/ditto` (a file-copy utility) which can shadow the npm CLI on default PATHs. `heyditto` has no such collision and works identically on every platform.
 
-**Why 1.2.0+:** this skill uses current MCP fetch formats and memory update/publish commands. Earlier 1.1.x builds still support `--output` and the `heyditto` alias but do not expose the newer memory-management surface.
+**Why 3.19.0+:** this skill uses current MCP fetch formats, memory update/publish commands, and the owner consent flow. Earlier CLI releases cannot identify themselves to the consent gate or run `heyditto consent`.
 
 > If `heyditto --version` reports `heyditto: command not found`, the CLI is either missing or older than 1.1.3 — run the install line again. If you still want to use `ditto` (e.g. on Linux or once your PATH is sorted), `ditto` is the same binary.
 
@@ -94,6 +94,8 @@ Expected (pretty-printed JSON):
 }
 ```
 
+If the account has not accepted Ditto's Terms of Service and AI processing, ask its owner to run `heyditto consent` and accept in the browser before the smoke test. An unclaimed agent account must be claimed first; its owner accepts during claiming.
+
 Then exercise a data command:
 
 ```bash
@@ -115,7 +117,7 @@ Hermes will now use Ditto memory automatically when the conversation calls for i
 | Symptom | Fix |
 |---|---|
 | `heyditto: command not found` | `npm install -g @heyditto/cli@latest`; reopen shell to pick up the new bin. (`heyditto` ships in 1.1.3+.) |
-| `Unknown option '--memory-format'` or `Unknown command: update/publish` | Installed `@heyditto/cli` is older than 1.2.0. `npm install -g @heyditto/cli@latest`. |
+| `Unknown option '--memory-format'` or `Unknown command: update/publish/consent` | Installed `@heyditto/cli` is older than 3.19.0. `npm install -g @heyditto/cli@latest`. |
 | `Unknown option '--output'` from the npm CLI | Installed `@heyditto/cli` is older than 1.1.3. `npm install -g @heyditto/cli@latest`. |
 | `ditto: unrecognized option '--output'` *or* `Usage: ditto [ <options> ] src [ ... src ] dst` | You typed `ditto` and hit Apple's `/usr/bin/ditto`. Use `heyditto` (no collision) or fix PATH — see step 1. |
 | `error: no Ditto API key configured` | `heyditto init --agent --agent-caller hermes --json` for no-human setup, or `hermes skills config ditto` / `heyditto login <key>` for an existing human key. |

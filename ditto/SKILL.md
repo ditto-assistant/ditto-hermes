@@ -36,7 +36,7 @@ Reach for Ditto memory whenever the user:
 
 ## Prerequisites
 
-The `heyditto` CLI ([`@heyditto/cli`](https://www.npmjs.com/package/@heyditto/cli)) must be on PATH at version **1.2.0 or newer** (the version that includes current MCP fetch formats and memory update/publish commands). Hermes installs Node.js as part of its install, so:
+The `heyditto` CLI ([`@heyditto/cli`](https://www.npmjs.com/package/@heyditto/cli)) must be on PATH at version **3.19.0 or newer** (the version that includes current MCP fetch formats, memory update/publish, and the owner consent flow). Hermes installs Node.js as part of its install, so:
 
 ```bash
 npm install -g @heyditto/cli@latest
@@ -137,10 +137,12 @@ heyditto network <pairId from step 1> --limit 30 --output json # related via sha
 
 `heyditto status` prints the live tool list straight from the MCP — trust it over this file if anything drifts. `ditto <subcommand>` works identically when the npm bin wins on PATH.
 
+If Ditto reports that this account has not accepted its Terms of Service and AI processing, do not retry model-backed tools or claim the task is complete. Ask the account owner to run `heyditto consent` and accept in the browser. If the account was created by an agent and is unclaimed, share its claim link first; the owner accepts during claiming.
+
 ## Pitfalls
 
 - **`heyditto: command not found`** → `@heyditto/cli` isn't installed or is older than 1.1.3 (which introduced the `heyditto` alias). Run `npm install -g @heyditto/cli@latest` and reopen the shell.
-- **`Unknown option '--memory-format'`, `Unknown command: update`, or `Unknown command: publish`** → installed `@heyditto/cli` is older than 1.2.0. Same fix: `npm install -g @heyditto/cli@latest`.
+- **`Unknown option '--memory-format'`, `Unknown command: update`, `Unknown command: publish`, or `Unknown command: consent`** → installed `@heyditto/cli` is older than 3.19.0. Same fix: `npm install -g @heyditto/cli@latest`.
 - **`Unknown option '--output'`** → installed `@heyditto/cli` is older than 1.1.3. Same fix: `npm install -g @heyditto/cli@latest`.
 - **`ditto: unrecognized option '--output'` or `Usage: ditto [ <options> ] src [ ... src ] dst`** (only seen if a user typed `ditto` instead of `heyditto` on macOS) → that's Apple's `/usr/bin/ditto` shadowing the npm CLI. Stick to `heyditto` (no collision) or run `type -a ditto` and reorder PATH.
 - **`error: no Ditto API key configured`** → run `heyditto init --agent --agent-caller hermes --json` for no-human setup. If a human already has a key, re-prompt via `hermes skills config ditto`, or fall back to `heyditto login <key>`.
